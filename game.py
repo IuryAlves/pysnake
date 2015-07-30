@@ -1,63 +1,45 @@
 # coding: utf-8
 
 import pygame
-import os
-from pygame import sprite
-from pygame.locals import *
-from snake import Snake, Item
+import sys
+from colors import *
+from snake import *
 
+pygame.init()
+screen = pygame.display.set_mode([800, 600])
+pygame.display.set_caption('Snake Game')
 
-class Game(object):
+group = pygame.sprite.Group()
+clock = pygame.time.Clock()
+snake = Snake(group)
+while True:
 
-    FPS = 16
-    SCREEN_SIZE = (640, 460)
-    NAME = "PySnake"
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit(0)
 
-    keys = {
-        K_LEFT: False,
-        K_RIGHT: False,
-        K_UP: False,
-        K_DOWN: False,
-        K_RETURN: False,
-        27: False
-    }
+        # Set the speed based on the key pressed
+        # We want the speed to be enough that we move a full
+        # segment, plus the margin.
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                snake.left()
+            if event.key == pygame.K_RIGHT:
+                snake.right()
+            if event.key == pygame.K_UP:
+                snake.up()
+            if event.key == pygame.K_DOWN:
+                snake.down()
+    snake.draw()
+    screen.fill(BLACK)
 
-    def __init__(self):
-        pygame.init()
-        pygame.display.set_caption(Game.NAME)
-        self.screen = pygame.display.set_mode(Game.SCREEN_SIZE)
-        self.clock = pygame.time.Clock()
-        self.group = sprite.RenderUpdates()
-        self.background = pygame.image.load(os.path.sep.join(["sprites", "background.jpg"])).convert()
-        self.screen.blit(self.background, (0, 0))
-        self.snake = Snake((0, 10), self.group)
-        self.items = [Item((50, 50), self.group)]
+    group.draw(screen)
 
-    def run(self):
-        pygame.display.flip()
-        while True:
-            self.clock.tick(Game.FPS)
+    # Flip screen
+    pygame.display.flip()
 
-            for e in pygame.event.get([KEYUP, KEYDOWN]):
-                valor = (e.type == KEYDOWN)
-                if e.key in Game.keys:
-                    Game.keys[e.key] = valor
+    # Pause
+    clock.tick(5)
 
-            if Game.keys[K_LEFT]:
-                self.snake.move("LEFT")
-            elif Game.keys[K_RIGHT]:
-                self.snake.move("RIGHT")
-            elif Game.keys[K_DOWN]:
-                self.snake.move("DOWN")
-            elif Game.keys[K_UP]:
-                self.snake.move("UP")
-
-            if self.snake.rect.collidelistall(self.items):
-                print "collidiu"
-
-            self.group.clear(self.screen, self.background)
-            pygame.display.update(self.group.draw(self.screen))
-
-if __name__ == '__main__':
-    game = Game()
-    game.run()
+pygame.quit()

@@ -1,51 +1,72 @@
 # coding: utf-8
 
-import os
 import pygame
-from pygame.locals import RLEACCEL
-from pygame import sprite
+from colors import WHITE
 
-class Item(sprite.Sprite):
 
-    _base_image_path = 'sprites'
+segment_width = 15
+segment_height = 15
+segment_margin = 3
 
-    def __init__(self, position_tuple, *groups):
-        sprite.Sprite.__init__(self, *groups)
-        self.position_x, self.position_y = position_tuple
-        self.image = pygame.image.load(os.path.sep.join([Snake._base_image_path, 'item.png']))
+
+class Snake(list):
+
+    def __init__(self, group, *args, **kwargs):
+        super(Snake, self).__init__(*args, **kwargs)
+        self.group = group
+
+        self.x = segment_width + segment_margin
+        self.y = 0
+
+        self.create_segments()
+
+    def create_segments(self):
+        for i in range(15):
+            x = 250 - (segment_width + segment_margin) * i
+            y = 30
+            snake_segment = SnakeSegment(x, y)
+            self.append(snake_segment)
+            self.group.add(snake_segment)
+
+    def left(self):
+        self.x = (segment_width + segment_margin) * -1
+        self.y = 0
+
+    def right(self):
+        self.x = (segment_width + segment_margin)
+        self.y = 0
+
+    def down(self):
+        self.x = 0
+        self.y = (segment_height + segment_margin)
+
+    def up(self):
+        self.x = 0
+        self.y = (segment_height + segment_margin) * -1
+
+    def draw(self):
+        # Get rid of last segment of the snake
+        # .pop() command removes last item in list
+        old_segment = self.pop()
+        self.group.remove(old_segment)
+
+        x = self[0].rect.x + self.x
+        y = self[0].rect.y + self.y
+
+        snake_segment = SnakeSegment(x, y)
+
+        # Insert new segment into the list
+        self.insert(0, snake_segment)
+        self.group.add(snake_segment)
+
+
+class SnakeSegment(pygame.sprite.Sprite):
+
+    def __init__(self, x, y):
+        super(SnakeSegment, self).__init__()
+
+        self.image = pygame.Surface([segment_width, segment_height])
+        self.image.fill(WHITE)
         self.rect = self.image.get_rect()
-        self.rect.move_ip(self.position_x, self.position_y)
-        self.convert_image()
-
-    def convert_image(self):
-        self.image.set_alpha(None, RLEACCEL)
-        self.image.convert()
-        self.image.set_colorkey((0, 0, 0), RLEACCEL)
-
-
-class Snake(sprite.Sprite):
-
-    _base_image_path = 'sprites'
-
-    def __init__(self, position_tuple, *groups):
-        sprite.Sprite.__init__(self, *groups)
-        self.position_x, self.position_y = position_tuple
-        self.image = pygame.image.load(os.path.sep.join([Snake._base_image_path, 'snake.png']))
-        self.rect = self.image.get_rect()
-        self.rect.move_ip(self.position_x, self.position_y)
-        self.convert_image()
-
-    def move(self, side):
-        self.convert_image()
-        sides = {
-            "LEFT": (-10, 0),
-            "RIGHT": (10, 0),
-            "UP": (0, -10),
-            "DOWN": (0, 10)
-        }
-        self.rect.move_ip(sides[side])
-
-    def convert_image(self):
-        self.image.set_alpha(None, RLEACCEL)
-        self.image.convert()
-        self.image.set_colorkey((0, 0, 0), RLEACCEL)
+        self.rect.x = x
+        self.rect.y = y

@@ -1,7 +1,8 @@
 # coding: utf-8
 
+import random
 import pygame
-from colors import WHITE
+from colors import *
 
 
 segment_width = 15
@@ -24,9 +25,7 @@ class Snake(list):
         for i in range(15):
             x = 250 - (segment_width + segment_margin) * i
             y = 30
-            snake_segment = SnakeSegment(x, y)
-            self.append(snake_segment)
-            self.group.add(snake_segment)
+            self.add_segment(x, y, len(self) -1)
 
     def left(self):
         self.x = (segment_width + segment_margin) * -1
@@ -44,6 +43,11 @@ class Snake(list):
         self.x = 0
         self.y = (segment_height + segment_margin) * -1
 
+    def add_segment(self, x, y, list_position=0):
+        snake_segment = Segment(x, y)
+        self.insert(list_position, snake_segment)
+        self.group.add(snake_segment)
+
     def draw(self):
         # Get rid of last segment of the snake
         # .pop() command removes last item in list
@@ -52,21 +56,28 @@ class Snake(list):
 
         x = self[0].rect.x + self.x
         y = self[0].rect.y + self.y
+        self.add_segment(x, y)
 
-        snake_segment = SnakeSegment(x, y)
+class Segment(pygame.sprite.Sprite):
 
-        # Insert new segment into the list
-        self.insert(0, snake_segment)
-        self.group.add(snake_segment)
-
-
-class SnakeSegment(pygame.sprite.Sprite):
-
-    def __init__(self, x, y):
-        super(SnakeSegment, self).__init__()
+    def __init__(self, x, y, color=WHITE):
+        super(Segment, self).__init__()
 
         self.image = pygame.Surface([segment_width, segment_height])
-        self.image.fill(WHITE)
+        self.image.fill(color)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+
+class Block(Segment):
+
+    colors = [RED, GREEN, BLUE]
+
+    def __init__(self, screen_size, group):
+        self.group = group
+        x = random.randrange(screen_size[0])
+        y = random.randrange(screen_size[1])
+        color = random.choice(Block.colors)
+        super(Block, self).__init__(x, y, color=color)
+        self.group.add(self)

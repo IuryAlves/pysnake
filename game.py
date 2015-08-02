@@ -6,22 +6,23 @@ from colors import *
 from snake import *
 
 pygame.init()
-screen = pygame.display.set_mode([800, 600])
+
+screen_size = (800, 600)
+screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption('Snake Game')
 
-group = pygame.sprite.Group()
+snake_group = pygame.sprite.Group()
+block_group = pygame.sprite.Group()
 clock = pygame.time.Clock()
-snake = Snake(group)
-while True:
+snake = Snake(snake_group)
+block = Block(screen_size, block_group)
 
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit(0)
 
-        # Set the speed based on the key pressed
-        # We want the speed to be enough that we move a full
-        # segment, plus the margin.
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 snake.left()
@@ -31,15 +32,17 @@ while True:
                 snake.up()
             if event.key == pygame.K_DOWN:
                 snake.down()
+
+    if snake[0].rect.collidelist([block.rect]) != -1:
+        snake.add_segment(block.rect.x, block.rect.y)
+        block.group.remove(block)
+        block = Block(screen_size, block_group)
+
     snake.draw()
     screen.fill(BLACK)
-
-    group.draw(screen)
-
-    # Flip screen
+    snake_group.draw(screen)
+    block_group.draw(screen)
     pygame.display.flip()
-
-    # Pause
     clock.tick(5)
 
 pygame.quit()

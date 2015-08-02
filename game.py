@@ -38,6 +38,9 @@ while True:
         block.group.remove(block)
         block = Block(screen_size, block_group)
 
+    if snake[0].rect.collidelist([segment.rect for segment in snake[1:]]) != -1:
+        break
+
     snake.draw()
     screen.fill(BLACK)
     snake_group.draw(screen)

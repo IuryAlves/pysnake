@@ -19,13 +19,22 @@ class Snake(list):
         self.x = segment_width + segment_margin
         self.y = 0
 
-        self.create_segments()
+        self.createSegments()
 
-    def create_segments(self):
+    def createSegments(self):
         for i in range(15):
             x = 250 - (segment_width + segment_margin) * i
             y = 30
             self.add_segment(x, y, len(self) -1)
+
+    def collidesWithBlocks(self, block):
+        if self[0].rect.collidelist([block.rect]) != -1:
+            self.add_segment(block.rect.x, block.rect.y)
+            return True
+        return False
+
+    def collidesItSelf(self):
+        return self[0].rect.collidelist([segment.rect for segment in self[1:]]) != -1:
 
     def left(self):
         self.x = (segment_width + segment_margin) * -1

@@ -27,14 +27,18 @@ class Snake(list):
             y = 30
             self.add_segment(x, y, len(self) -1)
 
-    def collidesWithBlocks(self, block):
+    def collidesWithBlock(self, block):
         if self[0].rect.collidelist([block.rect]) != -1:
             self.add_segment(block.rect.x, block.rect.y)
             return True
         return False
 
+    def outOfTheScreen(self):
+        return self[0].rect.x > 790 or self[0].rect.x < 16 or \
+            self[0].rect.y < 12 or self[0].rect.y > 570
+
     def collidesItSelf(self):
-        return self[0].rect.collidelist([segment.rect for segment in self[1:]]) != -1:
+        return self[0].rect.collidelist([segment.rect for segment in self[1:]]) != -1
 
     def left(self):
         self.x = (segment_width + segment_margin) * -1

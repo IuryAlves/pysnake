@@ -32,13 +32,13 @@ while True:
                 snake.up()
             if event.key == pygame.K_DOWN:
                 snake.down()
+    if any([snake.collidesItSelf(), snake.outOfTheScreen()]):
+        break
 
-    if snake.collidesWithBlock(self, block):
+    if snake.collidesWithBlock(block):
         block.group.remove(block)
         block = Block(screen_size, block_group)
-    
-    if any([snake.collidesItSelf()]):
-        break
+
     snake.draw()
     screen.fill(BLACK)
     snake_group.draw(screen)

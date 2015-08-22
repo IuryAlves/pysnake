@@ -7,7 +7,7 @@ from colors import *
 
 segment_width = 15
 segment_height = 15
-segment_margin = 3
+segment_margin = 0
 
 
 class Snake(list):

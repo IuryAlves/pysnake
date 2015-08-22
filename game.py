@@ -3,7 +3,7 @@
 import pygame
 import sys
 from pygame.font import SysFont, get_default_font
-from  pygame.locals import *
+from pygame.locals import *
 from colors import *
 from snake import *
 
@@ -65,7 +65,7 @@ class Game(object):
     def gameOver(self):
         game_over_text = self.game_font.render('Game Over', 1, RED)
         new_game_text = self.new_game_font.render(
-                    'Press Enter to new game', 1, RED)
+            'Press Enter to new game', 1, RED)
         self.screen.blit(game_over_text, (250, 250))
         self.screen.blit(new_game_text, (200, 300))
         pressed_key = pygame.key.get_pressed()

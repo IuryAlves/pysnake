@@ -15,17 +15,15 @@ class Snake(list):
     def __init__(self, group, *args, **kwargs):
         super(Snake, self).__init__(*args, **kwargs)
         self.group = group
-
         self.x = segment_width + segment_margin
         self.y = 0
-
         self.createSegments()
 
     def createSegments(self):
         for i in range(15):
             x = 250 - (segment_width + segment_margin) * i
             y = 30
-            self.add_segment(x, y, len(self) -1)
+            self.add_segment(x, y, len(self) - 1)
 
     def collidesWithBlock(self, block):
         if self[0].rect.collidelist([block.rect]) != -1:
@@ -62,14 +60,13 @@ class Snake(list):
         self.group.add(snake_segment)
 
     def draw(self):
-        # Get rid of last segment of the snake
-        # .pop() command removes last item in list
         old_segment = self.pop()
         self.group.remove(old_segment)
 
         x = self[0].rect.x + self.x
         y = self[0].rect.y + self.y
         self.add_segment(x, y)
+
 
 class Segment(pygame.sprite.Sprite):
 

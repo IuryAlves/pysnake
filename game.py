@@ -15,12 +15,7 @@ class Game(object):
     FONT = get_default_font()
 
     def __init__(self):
-        pygame.init()
-        self.screen = pygame.display.set_mode(Game.SCREEN_SIZE)
-        pygame.display.set_caption('Snake Game')
-        self.game_font = SysFont(Game.FONT, 72)
-        self.new_game_font = SysFont(Game.FONT, 48)
-        self.score_font = SysFont(Game.FONT, 32)
+        self._initPygame()
         self.snake_group = pygame.sprite.Group()
         self.block_group = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
@@ -28,6 +23,14 @@ class Game(object):
         self.block = Block(Game.SCREEN_SIZE, self.block_group)
         self.game_over = False
         self.score = 0
+
+    def _initPygame(self):
+        pygame.init()
+        self.screen = pygame.display.set_mode(Game.SCREEN_SIZE)
+        pygame.display.set_caption('Snake Game')
+        self.game_font = SysFont(Game.FONT, 72)
+        self.new_game_font = SysFont(Game.FONT, 48)
+        self.score_font = SysFont(Game.FONT, 32)
 
     def newGame(self):
         self.snake_group.empty()
@@ -41,9 +44,9 @@ class Game(object):
         self.screen.fill(BLACK)
         self.snake_group.draw(self.screen)
         self.block_group.draw(self.screen)
-        self.display_score()
+        self.displayScore()
 
-    def display_score(self):
+    def displayScore(self):
         score_text = self.score_font.render("Score: %d" % self.score, 1, WHITE)
         self.screen.blit(score_text, (0, 0))
 
@@ -63,6 +66,7 @@ class Game(object):
                 self.snake.down()
 
     def gameOver(self):
+        self.score = 0
         game_over_text = self.game_font.render('Game Over', 1, RED)
         new_game_text = self.new_game_font.render(
             'Press Enter to new game', 1, RED)

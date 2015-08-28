@@ -80,8 +80,6 @@ class Game(object):
         while True:
             self.handleInput()
             if any([self.snake.collidesItSelf(), self.snake.outOfTheScreen()]):
-                self.game_over = True
-            if self.game_over:
                 self.gameOver()
             else:
                 if self.snake.collidesWithBlock(self.block):

@@ -78,7 +78,6 @@ class Game(object):
 
     def run(self):
         while True:
-            print len(self.snake)
             self.handleInput()
             if any([self.snake.collidesItSelf(), self.snake.outOfTheScreen()]):
                 self.gameOver()

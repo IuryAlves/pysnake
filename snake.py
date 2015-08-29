@@ -27,7 +27,7 @@ class Snake(list):
 
     def collidesWithBlock(self, block):
         if self[0].rect.collidelist([block.rect]) != -1:
-            self.add_segment(block.rect.x, block.rect.y)
+            self.add_segment(self[0].rect.x, self[0].rect.y)
             return True
         return False
 
